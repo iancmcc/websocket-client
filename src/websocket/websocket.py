@@ -30,6 +30,11 @@ import hashlib
 import base64
 import logging
 
+#from ._fastmask import mask # C mask
+from ._mask import mask      # Cython mask
+#from .oldmask import mask   # Python mask
+
+
 """
 websocket python client.
 =========================
@@ -326,11 +331,7 @@ class ABNF(object):
 
         data: data to mask/unmask.
         """
-        _m = array.array("B", mask_key)
-        _d = array.array("B", data)
-        for i in xrange(len(_d)):
-            _d[i] ^= _m[i % 4]
-        return _d.tostring()
+        return mask(mask_key, data)
 
 
 class WebSocket(object):

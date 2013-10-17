@@ -1,19 +1,9 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 from distutils.core import Extension
 
 
-VERSION = "0.11.0"
-
-
-def extensions():
-    root = os.path.dirname(__file__)
-    for dpath, dnames, fnames in os.walk(root):
-        fqdn = '.'.join(dpath.replace(root, '').lstrip('/').split('/'))
-        for fname in fnames:
-            if fname.endswith('.c'):
-                yield Extension('%s.%s' % (fqdn, fname[:-2]), 
-                        ['%s/%s' % (dpath, fname)])
+VERSION = "0.11.1"
 
 
 setup(
@@ -37,7 +27,9 @@ setup(
         "Intended Audience :: Developers",
     ],
     keywords='websockets',
-    py_modules=["websocket"],
     scripts=["bin/wsdump.py"],
-    ext_modules=list(extensions())
+    packages=find_packages('src'),
+    package_dir={'':'src'},
+    ext_modules=[Extension('websocket._mask', ['src/websocket/_mask.c']),
+                 Extension('websocket._fastmask', ['src/websocket/_fastmask.c'])]
 )
